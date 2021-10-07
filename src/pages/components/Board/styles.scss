@@ -1,0 +1,129 @@
+@use "sass:math";
+@import "bourbon";
+@import url(https://fonts.googleapis.com/css?family=Roboto:700);
+
+@mixin transform($property: none) {
+  @include prefixer(transform, $property, webkit moz ms o spec);
+}
+@mixin transition($properties...) {
+  $needs-prefixes: false;
+  $webkit: ();
+  $moz: ();
+  $spec: ();
+
+  // Create lists for vendor-prefixed transform
+  @each $list in $properties {
+    @if nth($list, 1) == "transform" {
+      $needs-prefixes: true;
+      $list1: -webkit-transform;
+      $list2: -moz-transform;
+      $list3: ();
+
+      @each $var in $list {
+        $list3: join($list3, $var);
+
+        @if $var != "transform" {
+          $list1: join($list1, $var);
+          $list2: join($list2, $var);
+        }
+      }
+
+      $webkit: append($webkit, $list1);
+      $moz: append($moz, $list2);
+      $spec: append($spec, $list3);
+    } @else {
+      $webkit: append($webkit, $list, comma);
+      $moz: append($moz, $list, comma);
+      $spec: append($spec, $list, comma);
+    }
+  }
+
+  @if $needs-prefixes {
+    -webkit-transition: $webkit;
+    -moz-transition: $moz;
+    transition: $spec;
+  } @else {
+    @if length($properties) >= 1 {
+      @include prefixer(transition, $properties, webkit moz spec);
+    } @else {
+      $properties: all 0.15s ease-out 0s;
+      @include prefixer(transition, $properties, webkit moz spec);
+    }
+  }
+}
+@mixin transition-delay($times...) {
+  @include prefixer(transition-delay, $times, webkit moz spec);
+}
+
+$FlatWetAsphalt: #34495e;
+$FlatAlizarin: #e74c3c;
+$FlatMidnightBlue: #2c3e50;
+$FlatEmerald: #2ecc71;
+$FlatClouds: #ecf0f1;
+
+$mainFont: "Roboto", sans-serif;
+
+$boardWidth: 400px;
+$boardSize: 15;
+$boardElementWidth: 3px;
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $FlatMidnightBlue;
+}
+
+.board {
+  margin: auto;
+  margin-top: 10px;
+  width: $boardWidth;
+  height: $boardWidth;
+}
+
+.boardRow {
+  width: 100%;
+  height: math.div(100%, $boardSize);
+  border-bottom: 1px solid $FlatMidnightBlue;
+  box-sizing: border-box;
+}
+
+.boardCol {
+  $columnWidth: 100%;
+  width: math.div($columnWidth, $boardSize);
+  height: 100%;
+  background-color: $FlatWetAsphalt;
+  float: left;
+  border-radius: 3px;
+  border-left: 1px solid $FlatMidnightBlue;
+  box-sizing: border-box;
+}
+
+.boardCellCross {
+  $cellWidth: 70% * 1.41;
+  margin: auto;
+  margin-top: math.div(100% - $cellWidth, 2);
+  width: $boardElementWidth;
+  height: $cellWidth;
+  background-color: $FlatEmerald;
+  @include transform(rotate(-45deg));
+  border-radius: math.div($boardElementWidth, 2);
+  &:before {
+    background-color: inherit;
+    border-radius: inherit;
+    height: inherit;
+    width: inherit;
+    position: absolute;
+    content: "";
+    @include transform(rotate(90deg));
+  }
+}
+
+.boardCellCircle {
+  $cellWidth: 70%;
+  margin: math.div(100% - $cellWidth, 2);
+  width: $cellWidth;
+  height: $cellWidth;
+  border: $boardElementWidth solid $FlatAlizarin;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
