@@ -5,13 +5,13 @@ const findStreak = (
   matrix: Matrix,
   originalPosition: Position,
   position: Position,
-  arr: Player[],
+  arr: [Player, Position][],
   direction: Directions,
   checkOpposite = true
-): Player[] => {
+): [Player, Position][] => {
   const [newEntry, newPosition] = getNeighbor(matrix, position, direction);
-  if (arr[0] === newEntry) {
-    const newArr = [...arr, newEntry];
+  if (arr[0][0] === newEntry) {
+    const newArr: [Player, Position][] = [...arr, [newEntry, newPosition]];
     if (newArr.length === winningThreshhold) {
       return newArr;
     }
@@ -40,9 +40,11 @@ const findStreak = (
 export const isGameOver = (
   matrix: Matrix,
   newField: Position
-): Player | undefined => {
+): [Player, Position[]] | undefined => {
   const [newX, newY] = newField;
-  let initialStreak = [matrix[newX][newY]];
+  let initialStreak: [Player, Position][] = [
+    [matrix[newX][newY], [newX, newY]],
+  ];
   for (const direction in oppositeDirections) {
     const streak = findStreak(
       matrix,
@@ -52,7 +54,7 @@ export const isGameOver = (
       direction as Directions
     );
     if (streak.length === winningThreshhold) {
-      return streak[0];
+      return [streak[0][0], streak.map(([, pos]) => pos)];
     }
   }
   return undefined;
