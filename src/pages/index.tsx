@@ -4,9 +4,12 @@ import "../styles/global.css";
 
 // styles
 const pageStyles: CSSProperties = {
-  color: "#232129",
-  padding: 40,
   fontFamily: "-apple-system, Roboto, sans-serif, serif",
+  minHeight: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
 };
 
 // markup

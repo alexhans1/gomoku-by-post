@@ -5,8 +5,25 @@ import { Matrix, Player, Position } from "../../../interfaces";
 import { isGameOver } from "../../../utils/game";
 import "./styles.scss";
 
-const classNameMap = { x: "boardCellCross", o: "boardCellCircle" };
-const initialMatrix = Array(boardSize).fill(Array(boardSize).fill(null));
+const cellIconColors = {
+  default: { x: "bg-yellow-400", o: "border-blue-200" },
+  winning: { x: "bg-yellow-200", o: "border-blue-100" },
+};
+
+const getCellClassName = (cell: Player, isWinningCell: boolean) => {
+  let className = {
+    x: "boardCellCross ",
+    o: "boardCellCircle ",
+  }[cell];
+  className += isWinningCell
+    ? cellIconColors.winning[cell]
+    : cellIconColors.default[cell];
+  return className;
+};
+
+const initialMatrix: Matrix = Array(boardSize).fill(
+  Array(boardSize).fill(null)
+);
 const startingPlayer = "x";
 const Board = () => {
   const [matrix, setMatrix] = useState(initialMatrix);
@@ -85,53 +102,57 @@ const Board = () => {
   };
 
   return (
-    <section>
-      <div className="board">
-        <div className="text-white flex justify-center items-center mx-auto mb-2">
+    <section className="w-full p-6 md:max-w-4xl md:p-0">
+      <div className="mt-6 m-auto xl:max-w-xl">
+        <div className="text-gray-50 flex justify-center items-center mx-auto mb-2 text-xl">
           <button
-            className="mr-auto cursor-pointer bg-green-600 hover:bg-green-700 rounded px-2 py-1"
+            className="mr-auto cursor-pointer bg-gray-600 hover:bg-gray-700 rounded px-2 py-1"
             onClick={handleNewGame}
           >
             New
           </button>
           <button
-            className="cursor-pointer bg-green-600 hover:bg-green-700 rounded px-2"
+            className="cursor-pointer bg-gray-600 hover:bg-gray-700 rounded px-2"
             onClick={handleGoBack}
           >
             {"<"}
           </button>
           <button
-            className="cursor-pointer bg-green-600 hover:bg-green-700 rounded px-2 ml-2"
+            className="cursor-pointer bg-gray-600 hover:bg-gray-700 rounded px-2 ml-2"
             onClick={handleGoForward}
             disabled={replayIndex === 0}
           >
             {">"}
           </button>
         </div>
-        {matrix.map((row, x) => {
-          return (
-            <div key={`row_${x}`} className="boardRow">
-              {row.map((cell, y) => {
-                const isPartOfWinningStreak = !!winningStreak?.find(
-                  ([wx, wy]) => wx === x && wy === y
-                );
-                return (
-                  <div
-                    key={`cell_${x}_${y}`}
-                    className={`boardCol cursor-pointer ${
-                      isPartOfWinningStreak ? "bg-green-100" : ""
-                    }`}
-                    onClick={(e) => {
-                      handleCellClick(x, y, e);
-                    }}
-                  >
-                    <div className={classNameMap[cell]} />
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+        <div
+          className="grid gap-1"
+          style={{ gridTemplateColumns: `repeat(${boardSize}, 1fr)` }}
+        >
+          {matrix.map((row, x) => {
+            return row.map((cell, y) => {
+              const isPartOfWinningStreak = !!winningStreak?.find(
+                ([wx, wy]) => wx === x && wy === y
+              );
+              return (
+                <div
+                  key={`cell_${x}_${y}`}
+                  className={`cell cursor-pointer rounded-sm flex items-center justify-center bg-gray-700`}
+                  style={{ aspectRatio: "1" }}
+                  onClick={(e) => {
+                    handleCellClick(x, y, e);
+                  }}
+                >
+                  {cell && (
+                    <div
+                      className={getCellClassName(cell, isPartOfWinningStreak)}
+                    />
+                  )}
+                </div>
+              );
+            });
+          })}
+        </div>
       </div>
     </section>
   );

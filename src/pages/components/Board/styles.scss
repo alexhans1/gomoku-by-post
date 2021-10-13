@@ -55,58 +55,27 @@
   @include prefixer(transition-delay, $times, webkit moz spec);
 }
 
-$cellColor: #34495e;
-$FlatAlizarin: #e74c3c;
-$backgorundColor: #2c3e50;
-$crossColor: #2ecc71;
-$circleColor: #ecf0f1;
-
-$mainFont: "Roboto", sans-serif;
-
-$boardWidth: 600px;
-$boardSize: 15;
 $boardElementWidth: 4px;
 
 body {
   margin: 0;
   padding: 0;
-  background-color: $backgorundColor;
+  background: url("https://images.unsplash.com/photo-1520916784675-1b97f1fc1c05?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fGdyYWRpZW50JTIwYmFja2dyb3VuZHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60")
+    center center no-repeat #cccccc;
+  background-size: cover;
 }
 
-.board {
-  margin: auto;
-  margin-top: 10px;
-  width: $boardWidth;
-  height: $boardWidth;
-}
-
-.boardRow {
-  width: 100%;
-  height: math.div(100%, $boardSize);
-  border-bottom: 1px solid $backgorundColor;
-  box-sizing: border-box;
-}
-
-.boardCol {
-  $columnWidth: 100%;
-  width: math.div($columnWidth, $boardSize);
-  height: 100%;
-  background-color: $cellColor;
-  float: left;
-  border-radius: 3px;
-  border-left: 1px solid $backgorundColor;
-  box-sizing: border-box;
+.cell {
+  // background-color: #232a36 !important;
+  border: 1px solid rgba(93, 93, 93, 0.75);
 }
 
 .boardCellCross {
   $cellWidth: 70% * 1.41;
   margin: auto;
-  margin-top: math.div(100% - $cellWidth, 2);
   width: $boardElementWidth;
   height: $cellWidth;
-  background-color: $crossColor;
   @include transform(rotate(-45deg));
-  border-radius: math.div($boardElementWidth, 2);
   &:before {
     background-color: inherit;
     border-radius: inherit;
@@ -119,11 +88,9 @@ body {
 }
 
 .boardCellCircle {
-  $cellWidth: 70%;
-  margin: math.div(100% - $cellWidth, 2);
+  $cellWidth: 73%;
   width: $cellWidth;
   height: $cellWidth;
-  border: $boardElementWidth solid $FlatAlizarin;
+  border: $boardElementWidth solid;
   border-radius: 50%;
-  box-sizing: border-box;
 }
