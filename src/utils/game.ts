@@ -1,4 +1,4 @@
-import { winningThreshhold } from "../constants";
+import { winningThreshold } from "../constants";
 import { Matrix, Player, Position } from "../interfaces";
 
 const findStreak = (
@@ -12,7 +12,7 @@ const findStreak = (
   const [newEntry, newPosition] = getNeighbor(matrix, position, direction);
   if (arr[0][0] === newEntry) {
     const newArr: [Player, Position][] = [...arr, [newEntry, newPosition]];
-    if (newArr.length === winningThreshhold) {
+    if (newArr.length === winningThreshold) {
       return newArr;
     }
     return findStreak(
@@ -53,7 +53,7 @@ export const isGameOver = (
       initialStreak,
       direction as Directions
     );
-    if (streak.length === winningThreshhold) {
+    if (streak.length === winningThreshold) {
       return [streak[0][0], streak.map(([, pos]) => pos)];
     }
   }
