@@ -1,2 +1,2 @@
-export const boardSize = 15;
+export const boardSize = 19;
 export const winningThreshold = 5;

@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
+      ...colors,
       gray: colors.blueGray,
       blue: {
         100: "#F2FAFF",

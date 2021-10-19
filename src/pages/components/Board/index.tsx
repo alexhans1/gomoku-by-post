@@ -8,16 +8,21 @@ import "./styles.scss";
 const cellIconColors = {
   default: { x: "bg-yellow-400", o: "border-blue-200" },
   winning: { x: "bg-yellow-200", o: "border-blue-100" },
+  last: { x: "bg-white", o: "border-white" },
 };
 
-const getCellClassName = (cell: Player, isWinningCell: boolean) => {
+const getCellClassName = (
+  cell: Player,
+  isWinningCell: boolean,
+  isLast: boolean
+) => {
   let className = {
     x: "boardCellCross ",
     o: "boardCellCircle ",
   }[cell];
-  className += isWinningCell
-    ? cellIconColors.winning[cell]
-    : cellIconColors.default[cell];
+  if (isWinningCell) className += cellIconColors.winning[cell];
+  else if (isLast) className += cellIconColors.last[cell];
+  else className += cellIconColors.default[cell];
   return className;
 };
 
@@ -134,10 +139,37 @@ const Board = () => {
               const isPartOfWinningStreak = !!winningStreak?.find(
                 ([wx, wy]) => wx === x && wy === y
               );
+              const isCenter = Math.floor(boardSize / 2) === x && x === y;
+              const isCorner =
+                (Math.ceil(boardSize / 4) === x && x === y) ||
+                (Math.ceil(boardSize / 4) === x &&
+                  Math.ceil(boardSize / 1.5) === y) ||
+                (Math.ceil(boardSize / 1.5) === x && x === y) ||
+                (Math.ceil(boardSize / 1.5) === x &&
+                  Math.ceil(boardSize / 4) === y);
+              const isSide =
+                (Math.ceil(boardSize / 4) === x &&
+                  Math.floor(boardSize / 2) === y) ||
+                (Math.ceil(boardSize / 1.5) === x &&
+                  Math.floor(boardSize / 2) === y) ||
+                (Math.floor(boardSize / 2) === x &&
+                  Math.ceil(boardSize / 4) === y) ||
+                (Math.floor(boardSize / 2) === x &&
+                  Math.ceil(boardSize / 1.5) === y);
+              const shouldHighlight = isCenter || isCorner || isSide;
+              const [, lastPosition] = lastMoves[lastMoves.length - 1] || [
+                undefined,
+                [],
+              ];
+              const [lastX, lastY] = lastPosition;
+              const isLast = lastX === x && lastY === y;
+
               return (
                 <div
                   key={`cell_${x}_${y}`}
-                  className={`cell cursor-pointer rounded-sm flex items-center justify-center bg-gray-700`}
+                  className={`cell cursor-pointer rounded-sm flex items-center justify-center ${
+                    shouldHighlight ? "bg-gray-800" : "bg-gray-700"
+                  }`}
                   style={{ aspectRatio: "1" }}
                   onClick={(e) => {
                     handleCellClick(x, y, e);
@@ -145,7 +177,11 @@ const Board = () => {
                 >
                   {cell && (
                     <div
-                      className={getCellClassName(cell, isPartOfWinningStreak)}
+                      className={getCellClassName(
+                        cell,
+                        isPartOfWinningStreak,
+                        isLast
+                      )}
                     />
                   )}
                 </div>
